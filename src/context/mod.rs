@@ -1,17 +1,22 @@
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
+use crate::constants::{GAME_RETRY_KEYWORD, GAME_MIN, GAME_MAX};
+
 
 pub struct GameContext {}
 
 impl GameContext {
-    pub fn init() {
-        let mut agree_continue = String::new();
 
-        while agree_continue != "y" {
+    pub fn init() {
+        let mut agree_continue = String::from(GAME_RETRY_KEYWORD);
+
+        while agree_continue.trim().to_lowercase() == GAME_RETRY_KEYWORD {
+            agree_continue = String::new();
+
             println!("Guess the number, human");
 
-            let secret_number: u32 = rand::thread_rng().gen_range(1..=100);
+            let secret_number: u8 = rand::thread_rng().gen_range(GAME_MIN..=GAME_MAX);
 
             // Loop guessing until the user guesses correctly
             GameContext::guess_number(secret_number);
@@ -24,9 +29,9 @@ impl GameContext {
     // Private methods
 
     // Guess number logic
-    fn guess_number (secret_number: u32) {
+    fn guess_number (secret_number: u8) {
         'guess_loop: loop {
-            println!("Give it a try and input a name in between 1 and 100");
+            println!("Give it a try and input a name in between {} and {}", GAME_MIN, GAME_MAX);
 
             let mut guessed_number = String::new();
 
@@ -35,7 +40,7 @@ impl GameContext {
                 .expect("Input number failed");
 
             // Shadow guessed_number to parse it as 'unsigned 32'
-            let guessed_number: u32 = match guessed_number.trim().parse() {
+            let guessed_number: u8 = match guessed_number.trim().parse() {
                 Ok(num) => num,
                 Err(_error) => continue 'guess_loop,
             };
