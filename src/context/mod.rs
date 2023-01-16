@@ -8,7 +8,7 @@ impl GameContext {
     pub fn init() {
         let mut agree_continue = String::new();
 
-        'game_loop: loop {
+        while agree_continue != "y" {
             println!("Guess the number, human");
 
             let secret_number: u32 = rand::thread_rng().gen_range(1..=100);
@@ -16,21 +16,14 @@ impl GameContext {
             // Loop guessing until the user guesses correctly
             GameContext::guess_number(secret_number);
 
-            println!("Would you like to continue? y/n");
-            io::stdin()
-                .read_line(&mut agree_continue)
-                .expect("answer not recorded");
+            GameContext::retry_game(&mut agree_continue);
 
-            if !agree_continue.trim().to_lowercase().eq("y") {
-                break 'game_loop;
-            } else {
-                agree_continue = String::new();
-            }
         }
     }
 
     // Private methods
 
+    // Guess number logic
     fn guess_number (secret_number: u32) {
         'guess_loop: loop {
             println!("Give it a try and input a name in between 1 and 100");
@@ -59,6 +52,14 @@ impl GameContext {
                 }
             }
         }
+    }
+
+    // Retry logic
+    fn retry_game (agree_continue: &mut String) {
+        println!("Would you like to continue? y/n");
+        io::stdin()
+            .read_line(agree_continue)
+            .expect("answer not recorded");
     }
 }
 
